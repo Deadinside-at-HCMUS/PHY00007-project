@@ -2,6 +2,7 @@ import React from "react";
 import { FiLogOut } from "react-icons/fi";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RxDashboard } from "react-icons/rx";
+import Logo from "./assets/logo.png";
 
 const Navbar = () => {
   const router = useLocation();
@@ -9,16 +10,13 @@ const Navbar = () => {
   return (
     <div className="shadow-md px-6 py-4 flex justify-between items-center">
       <p
-        className="font-semibold text-2xl flex justify-center items-center cursor-pointer"
-        onClick={() => navigate("/")}
+        className="font-semibold text-2xl flex justify-center items-center"
       >
-        <span className="mr-2">
-          <RxDashboard />
-        </span>{" "}
+        <img className="w-[10%] mr-4" src={Logo} />
         {router.state && router.state.type} Dashboard
       </p>
       <button
-        className="flex justify-center items-center text-red-500 px-3 py-2 font-semibold rounded-sm"
+        className="flex justify-center items-center text-red-500 px-3 py-2 font-semibold rounded-sm hover:text-red-400"
         onClick={() => navigate("/")}
       >
         Logout

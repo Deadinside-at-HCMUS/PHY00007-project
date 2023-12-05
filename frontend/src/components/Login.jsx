@@ -5,6 +5,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { baseApiURL } from "../baseUrl";
+import Logo from "./assets/logo.png";
+
 const Login = () => {
   const navigate = useNavigate();
   const [selected, setSelected] = useState("Student");
@@ -39,7 +41,11 @@ const Login = () => {
         alt=""
       />
       <div className="w-[40%] flex justify-center items-start flex-col pl-8">
-        <p className="text-3xl font-semibold pb-2 border-b-2 border-green-500">
+        <div className="flex justify-center items-center flex-row pb-12">
+          <img className="w-[20%]" src={Logo} />
+          <p className="text-3xl font-semibold p-5 text-blue-900">Smart Attendance System</p>
+        </div>
+        <p className={`text-3xl font-semibold pb-2 border-b-2 ${selected === "Admin" ? 'border-red-500' : (selected === "Student" ? 'border-blue-500' : 'border-green-500')}`}>
           {selected && selected} Login
         </p>
         <form
@@ -54,7 +60,7 @@ const Login = () => {
               type="number"
               id="eno"
               required
-              className="bg-white outline-none border-2 border-gray-400 py-2 px-4 rounded-md w-full focus:border-blue-500"
+              className="bg-white outline-none border-2 border-gray-300 py-2 px-4 rounded-md w-full focus:border-blue-500"
               {...register("loginid")}
             />
           </div>
@@ -66,7 +72,7 @@ const Login = () => {
               type="password"
               id="password"
               required
-              className="bg-white outline-none border-2 border-gray-400 py-2 px-4 rounded-md w-full focus:border-blue-500"
+              className="bg-white outline-none border-2 border-gray-300 py-2 px-4 rounded-md w-full focus:border-blue-500"
               {...register("password")}
             />
           </div>
@@ -74,25 +80,25 @@ const Login = () => {
             <input type="checkbox" id="remember" className="accent-blue-500" />{" "}
             Remember Me
           </div> */}
-          <button className="bg-blue-500 mt-5 text-white px-6 py-2 text-xl rounded-md hover:bg-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all flex justify-center items-center">
-            Login
+          <button className={`mt-7 text-white px-5 py-2 text-xl rounded-md hover:ease-linear hover:duration-300 hover:transition-all transition-all flex justify-center items-center
+                            ${selected === "Admin" ? 'bg-red-500 hover:bg-red-700' : (selected === "Student" ? 'bg-blue-500 hover:bg-blue-700' : 'bg-green-500 hover:bg-green-700')}`}>            Login
             <span className="ml-2">
               <FiLogIn />
             </span>
           </button>
         </form>
       </div>
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-2">
         <button
-          className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-            selected === "Student" && "border-b-2 border-green-500"
+          className={`mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
+            selected === "Student" && "border-b-2 border-blue-500"
           }`}
           onClick={() => setSelected("Student")}
         >
           Student
         </button>
         <button
-          className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
+          className={`mr-6 text-base font-semibold hover:text-green-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
             selected === "Faculty" && "border-b-2 border-green-500"
           }`}
           onClick={() => setSelected("Faculty")}
@@ -100,8 +106,8 @@ const Login = () => {
           Faculty
         </button>
         <button
-          className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-            selected === "Admin" && "border-b-2 border-green-500"
+          className={`mr-6 text-base font-semibold hover:text-red-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
+            selected === "Admin" && "border-b-2 border-red-500"
           }`}
           onClick={() => setSelected("Admin")}
         >
