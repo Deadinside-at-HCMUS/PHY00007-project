@@ -1,96 +1,33 @@
 import axios from "axios";
-import React, { useEffect, useState, useCallback } from "react";
-import { FiUpload } from "react-icons/fi";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import Heading from "../../components/Heading";
-import { AiOutlineClose } from "react-icons/ai";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import toast from "react-hot-toast";
-import { storage } from "../../firebase/config";
+import { MdOutlineDelete } from "react-icons/md";
 import { baseApiURL } from "../../baseUrl";
 
 const Attendance = () => {
-  const [addselected, setAddSelected] = useState({
+  const [data, setData] = useState({
+    subject: "",
     studentID: "",
-    branch: "",
-    semester: "",
-    link: "",
+    time: "",
   });
-  const [file, setFile] = useState();
-  const [branch, setBranch] = useState();
-
-  const addAttendanceHandler = useCallback(() => {
-    toast.loading("Adding Attendance");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(`${baseApiURL()}/Attendance/addAttendance`, addselected, {
-        headers: headers,
-      })
-      .then((response) => {
-        toast.dismiss();
-        if (response.data.success) {
-          toast.success(response.data.message);
-          setAddSelected({
-            branch: "",
-            semester: "",
-            link: "",
-          });
-          setFile("");
-        } else {
-          console.log(response);
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        // toast.error(error.response.data.message);
-      });
-  }, [addselected]);
+  const [selected, setSelected] = useState("add");
+  const [attendance, setAttendance] = useState();
+  const [subject, setSubject] = useState();
 
   useEffect(() => {
-    getBranchData();
+    getSubjectData();
   }, []);
 
-  useEffect(() => {
-    const uploadFileToStorage = async (file) => {
-      toast.loading("Upload Attendance To Server");
-      const storageRef = ref(
-        storage,
-        `Attendance/${addselected.branch}/Semester ${addselected.semester}`
-      );
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {},
-        (error) => {
-          console.error(error);
-          toast.dismiss();
-          // toast.error("Something Went Wrong!");
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            toast.dismiss();
-            setFile();
-            toast.success("Attendance Uploaded To Server");
-            setAddSelected({ ...addselected, link: downloadURL });
-            addAttendanceHandler();
-          });
-        }
-      );
-    };
-    file && uploadFileToStorage(file);
-  }, [file, addAttendanceHandler, addselected]);
-
-  const getBranchData = () => {
+  const getSubjectData = () => {
     const headers = {
       "Content-Type": "application/json",
     };
     axios
-      .get(`${baseApiURL()}/branch/getBranch`, { headers })
+      .get(`${baseApiURL()}/subject/getSubject`, { headers })
       .then((response) => {
         if (response.data.success) {
-          setBranch(response.data.branches);
+          setSubject(response.data.subject);
         } else {
           toast.error(response.data.message);
         }
@@ -101,90 +38,179 @@ const Attendance = () => {
       });
   };
 
-  
+  useEffect(() => {
+    getAttendanceHandler();
+  }, []);
+
+
+  const getAttendanceHandler = () => {
+    axios
+      .get(`${baseApiURL()}/attendance/getAttendance`)
+      .then((response) => {
+        if (response.data.success) {
+          setAttendance(response.data.attendance);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
+
+  const addAttendanceHandler = () => {
+    toast.loading("Adding Attendance");
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    axios
+      .post(`${baseApiURL()}/attendance/addAttendance`, data, {
+        headers: headers,
+      })
+      .then((response) => {
+        toast.dismiss();
+        if (response.data.success) {
+          toast.success(response.data.message);
+          setData({ subject: "", studentID: "", time: "" });
+          getAttendanceHandler();
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        toast.dismiss();
+        toast.error(error.response.data.message);
+      });
+  };
+
+  const deleteAttendanceHandler = (id) => {
+    toast.loading("Deleting Attendance");
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    axios
+      .delete(`${baseApiURL()}/attendance/deleteAttendance/${id}`, {
+        headers: headers,
+      })
+      .then((response) => {
+        toast.dismiss();
+        if (response.data.success) {
+          toast.success(response.data.message);
+          getAttendanceHandler();
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        toast.dismiss();
+        toast.error(error.response.data.message);
+      });
+  };
   return (
     <div className="w-[85%] mx-auto mt-10 flex justify-center items-start flex-col mb-10">
       <div className="flex justify-between items-center w-full">
-        <Heading title={`Add Attendance`} />
-      </div>
-      <div className="w-full flex justify-evenly items-center mt-12">
-        <div className="w-1/2 flex flex-col justify-center items-center">
-          <p className="mb-4 text-xl font-medium">Add Attendance</p>
-          <select
-            id="branch"
-            className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] accent-blue-700 mt-4"
-            value={addselected.branch}
-            onChange={(e) =>
-              setAddSelected({ ...addselected, branch: e.target.value })
-            }
-          >
-            <option defaultValue>-- Select Department --</option>
-            {branch &&
-              branch.map((branch) => {
-                return (
-                  <option value={branch.name} key={branch.name}>
-                    {branch.name}
-                  </option>
-                );
-              })}
-          </select>
-          <select
-            onChange={(e) =>
-              setAddSelected({ ...addselected, semester: e.target.value })
-            }
-            value={addselected.semester}
-            name="branch"
-            id="branch"
-            className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] accent-blue-700 mt-4"
-          >
-            <option defaultValue>-- Select Semester --</option>
-            <option value="1">1st Semester</option>
-            <option value="2">2nd Semester</option>
-            <option value="3">3rd Semester</option>
-            <option value="4">4th Semester</option>
-            <option value="5">5th Semester</option>
-            <option value="6">6th Semester</option>
-            <option value="7">7th Semester</option>
-            <option value="8">8th Semester</option>
-          </select>
-          {!addselected.link && (
-            <label
-              htmlFor="upload"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] mt-4 flex justify-center items-center cursor-pointer"
-            >
-              Add Attendance
-              <span className="ml-2">
-                <FiUpload />
-              </span>
-            </label>
-          )}
-          {addselected.link && (
-            <p
-              className="px-2 border-2 border-blue-500 py-2 rounded text-base w-[80%] mt-4 flex justify-center items-center cursor-pointer"
-              onClick={() => setAddSelected({ ...addselected, link: "" })}
-            >
-              Remove Selected Attendance
-              <span className="ml-2">
-                <AiOutlineClose />
-              </span>
-            </p>
-          )}
-          <input
-            type="file"
-            name="upload"
-            id="upload"
-            accept="image/*"
-            hidden
-            onChange={(e) => setFile(e.target.files[0])}
-          />
+        <Heading title="Add Attendance" />
+        <div className="flex justify-end items-center w-full">
           <button
-            className="bg-blue-500 text-white mt-8 px-4 py-2 rounded-sm"
+            className={`${
+              selected === "add" && "border-b-2 "
+            }border-blue-500 px-4 py-2 text-black rounded-sm mr-6`}
+            onClick={() => setSelected("add")}
+          >
+            Add Attendance
+          </button>
+          <button
+            className={`${
+              selected === "view" && "border-b-2 "
+            }border-blue-500 px-4 py-2 text-black rounded-sm`}
+            onClick={() => setSelected("view")}
+          >
+            View Attendance
+          </button>
+        </div>
+      </div>
+      {selected === "add" && (
+        <div className="flex flex-col justify-center items-center w-full mt-8">
+          <div className="w-[40%] mb-4">
+          <label htmlFor="" className="leading-7 text-sm">
+              Select Subject
+            </label>
+            <select
+              id="subject"
+              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[100%] accent-blue-700"
+              value={data.subject}
+              onChange={(e) =>
+                setData({ ...data, subject: e.target.value })
+              }
+            >
+              <option defaultValue>-- Select Subject --</option>
+              {subject &&
+                subject.map((subject) => {
+                  return (
+                    <option value={subject.name} key={subject.name}>
+                      {subject.name}
+                    </option>
+                  );
+                })}
+            </select>
+          </div>
+          <div className="w-[40%] mb-4">
+            <label htmlFor="studentID" className="leading-7 text-sm">
+              Enter Student ID
+            </label>
+            <input
+              type="number"
+              id="studentID"
+              value={data.studentID}
+              onChange={(e) => setData({ ...data, studentID: e.target.value })}
+              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
+          </div>
+          <div className="w-[40%]">
+            <label htmlFor="time" className="leading-7 text-sm ">
+              Enter Attendance Time
+            </label>
+            <input
+              type="datetime-local"
+              id="time"
+              value={data.time}
+              onChange={(e) => setData({ ...data, time: e.target.value })}
+              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
+          </div>
+          <button
+            className="mt-6 bg-blue-500 px-6 py-3 text-white"
             onClick={addAttendanceHandler}
           >
             Add Attendance
           </button>
         </div>
-      </div>
+      )}
+      {selected === "view" && (
+        <div className="mt-8 w-full">
+          <ul>
+            {attendance &&
+              attendance.map((item) => {
+                return (
+                  <li
+                    key={item.code}
+                    className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[70%]"
+                  >
+                    <div>
+                      {item.code} - {item.name}
+                    </div>
+                    <button
+                      className="text-2xl hover:text-red-500"
+                      onClick={() => deleteAttendanceHandler(item._id)}
+                    >
+                      <MdOutlineDelete />
+                    </button>
+                  </li>
+                );
+              })}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
