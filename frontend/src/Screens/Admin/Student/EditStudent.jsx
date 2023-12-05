@@ -184,7 +184,7 @@ const EditStudent = () => {
         <input
           type="text"
           className="px-6 py-3 w-full outline-none"
-          placeholder="Enrollment No."
+          placeholder="Student ID"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />

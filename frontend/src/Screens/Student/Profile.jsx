@@ -108,7 +108,7 @@ const Profile = () => {
             </p>
             <div className="mt-3">
               <p className="text-lg font-normal mb-2">
-                Enrollment No: {data.enrollmentNo}
+                Student ID: {data.enrollmentNo}
               </p>
               <p className="text-lg font-normal mb-2">Department: {data.branch}</p>
               <p className="text-lg font-normal mb-2">

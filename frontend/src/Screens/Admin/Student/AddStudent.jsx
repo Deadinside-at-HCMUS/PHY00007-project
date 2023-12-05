@@ -172,7 +172,7 @@ const AddStudent = () => {
       </div>
       <div className="w-[40%]">
         <label htmlFor="enrollmentNo" className="leading-7 text-sm ">
-          Enter Enrollment No
+          Enter Student ID
         </label>
         <input
           type="number"

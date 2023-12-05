@@ -7,8 +7,10 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import toast from "react-hot-toast";
 import { storage } from "../../firebase/config";
 import { baseApiURL } from "../../baseUrl";
-const Timetable = () => {
+
+const Attendance = () => {
   const [addselected, setAddSelected] = useState({
+    studentID: "",
     branch: "",
     semester: "",
     link: "",
@@ -16,13 +18,13 @@ const Timetable = () => {
   const [file, setFile] = useState();
   const [branch, setBranch] = useState();
 
-  const addTimetableHandler = useCallback(() => {
-    toast.loading("Adding Timetable");
+  const addAttendanceHandler = useCallback(() => {
+    toast.loading("Adding Attendance");
     const headers = {
       "Content-Type": "application/json",
     };
     axios
-      .post(`${baseApiURL()}/timetable/addTimetable`, addselected, {
+      .post(`${baseApiURL()}/Attendance/addAttendance`, addselected, {
         headers: headers,
       })
       .then((response) => {
@@ -52,10 +54,10 @@ const Timetable = () => {
 
   useEffect(() => {
     const uploadFileToStorage = async (file) => {
-      toast.loading("Upload Timetable To Server");
+      toast.loading("Upload Attendance To Server");
       const storageRef = ref(
         storage,
-        `Timetable/${addselected.branch}/Semester ${addselected.semester}`
+        `Attendance/${addselected.branch}/Semester ${addselected.semester}`
       );
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
@@ -70,15 +72,15 @@ const Timetable = () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             toast.dismiss();
             setFile();
-            toast.success("Timetable Uploaded To Server");
+            toast.success("Attendance Uploaded To Server");
             setAddSelected({ ...addselected, link: downloadURL });
-            addTimetableHandler();
+            addAttendanceHandler();
           });
         }
       );
     };
     file && uploadFileToStorage(file);
-  }, [file, addTimetableHandler, addselected]);
+  }, [file, addAttendanceHandler, addselected]);
 
   const getBranchData = () => {
     const headers = {
@@ -103,11 +105,11 @@ const Timetable = () => {
   return (
     <div className="w-[85%] mx-auto mt-10 flex justify-center items-start flex-col mb-10">
       <div className="flex justify-between items-center w-full">
-        <Heading title={`Upload Timetable`} />
+        <Heading title={`Add Attendance`} />
       </div>
       <div className="w-full flex justify-evenly items-center mt-12">
         <div className="w-1/2 flex flex-col justify-center items-center">
-          <p className="mb-4 text-xl font-medium">Upload Timetable</p>
+          <p className="mb-4 text-xl font-medium">Add Attendance</p>
           <select
             id="branch"
             className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] accent-blue-700 mt-4"
@@ -150,7 +152,7 @@ const Timetable = () => {
               htmlFor="upload"
               className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[80%] mt-4 flex justify-center items-center cursor-pointer"
             >
-              Upload Timetable
+              Add Attendance
               <span className="ml-2">
                 <FiUpload />
               </span>
@@ -161,7 +163,7 @@ const Timetable = () => {
               className="px-2 border-2 border-blue-500 py-2 rounded text-base w-[80%] mt-4 flex justify-center items-center cursor-pointer"
               onClick={() => setAddSelected({ ...addselected, link: "" })}
             >
-              Remove Selected Timetable
+              Remove Selected Attendance
               <span className="ml-2">
                 <AiOutlineClose />
               </span>
@@ -177,9 +179,9 @@ const Timetable = () => {
           />
           <button
             className="bg-blue-500 text-white mt-8 px-4 py-2 rounded-sm"
-            onClick={addTimetableHandler}
+            onClick={addAttendanceHandler}
           >
-            Upload Timetable
+            Add Attendance
           </button>
         </div>
       </div>
@@ -187,4 +189,4 @@ const Timetable = () => {
   );
 };
 
-export default Timetable;
+export default Attendance;

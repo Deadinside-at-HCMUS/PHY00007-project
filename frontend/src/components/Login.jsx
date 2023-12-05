@@ -60,7 +60,7 @@ const Login = () => {
               type="number"
               id="eno"
               required
-              className="bg-white outline-none border-2 border-gray-300 py-2 px-4 rounded-md w-full focus:border-blue-500"
+              className={`bg-white outline-none border-2 border-gray-300 py-2 px-4 rounded-md w-full  ${selected === "Admin" ? 'focus:border-red-500' : (selected === "Student" ? 'focus:border-blue-500 ' : 'focus:border-green-500 ')}`}
               {...register("loginid")}
             />
           </div>
@@ -72,7 +72,7 @@ const Login = () => {
               type="password"
               id="password"
               required
-              className="bg-white outline-none border-2 border-gray-300 py-2 px-4 rounded-md w-full focus:border-blue-500"
+              className={`bg-white outline-none border-2 border-gray-300 py-2 px-4 rounded-md w-full  ${selected === "Admin" ? 'focus:border-red-500' : (selected === "Student" ? 'focus:border-blue-500 ' : 'focus:border-green-500 ')}`}
               {...register("password")}
             />
           </div>
