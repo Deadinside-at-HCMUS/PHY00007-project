@@ -42,7 +42,7 @@ const Login = () => {
       />
       <div className="w-[40%] flex justify-center items-start flex-col pl-8">
         <div className="flex justify-center items-center flex-row pb-12">
-          <img className="w-[20%]" src={Logo} />
+          <img className="w-[20%]" alt="HCMUS-logo" src={Logo} />
           <p className="text-3xl font-semibold p-5 text-blue-900">Smart Attendance System</p>
         </div>
         <p className={`text-3xl font-semibold pb-2 border-b-2 ${selected === "Admin" ? 'border-red-500' : (selected === "Student" ? 'border-blue-500' : 'border-green-500')}`}>
