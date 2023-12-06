@@ -4,8 +4,9 @@ const Attendace = require("../models/Other/Attendance");
 
 router.get("/getAttendance", async (req, res) => {
     try {
-        let attedance = await Attendace.find();
-        if (!attedance) {
+        let attendance = await Attendace.find();
+        // console.log(attendance);
+        if (!attendance) {
             return res
                 .status(400)
                 .json({ success: false, message: "No Attendace Available" });
@@ -13,7 +14,7 @@ router.get("/getAttendance", async (req, res) => {
         const data = {
             success: true,
             message: "All Attendace Loaded!",
-            attedance,
+            attendance,
         };
         res.json(data);
     } catch (error) {

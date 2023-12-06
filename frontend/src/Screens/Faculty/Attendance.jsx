@@ -42,12 +42,15 @@ const Attendance = () => {
     getAttendanceHandler();
   }, []);
 
-
   const getAttendanceHandler = () => {
+    const headers = {
+      "Content-Type": "application/json",
+    };
     axios
-      .get(`${baseApiURL()}/attendance/getAttendance`)
+      .get(`${baseApiURL()}/attendance/getAttendance`, { headers })
       .then((response) => {
         if (response.data.success) {
+          console.log(response.data);
           setAttendance(response.data.attendance);
         } else {
           toast.error(response.data.message);
