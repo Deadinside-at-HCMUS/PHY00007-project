@@ -111,7 +111,7 @@ const Profile = () => {
                 Employee Id: {data.employeeId}
               </p>
               <p className="text-lg font-normal mb-2">
-                Phone Number: +91 {data.phoneNumber}
+                Phone Number: +84 {data.phoneNumber}
               </p>
               <p className="text-lg font-normal mb-2">
                 Email Address: {data.email}
