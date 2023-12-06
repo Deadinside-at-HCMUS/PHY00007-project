@@ -16,6 +16,10 @@ const Subject = new mongoose.Schema({
   lecturer: {
     type: String,
     required: true,
+  },
+  students: {
+    type: [String],
+    required: true,
   }
 }, { timestamps: true });
 

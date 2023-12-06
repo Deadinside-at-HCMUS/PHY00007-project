@@ -20,8 +20,6 @@ const Attendance = () => {
   const [filterSubject, setFilterSubject] = useState(null);
   const [sortBy, setSortBy] = useState(null);  
 
-  const [newStudentID, setNewStudentID] = useState("");
-
   useEffect(() => {
     getSubjectData();
   }, []);
