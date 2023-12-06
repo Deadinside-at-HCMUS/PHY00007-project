@@ -231,7 +231,7 @@ const Subjects = () => {
         </div>
       )}
       {selected === "view" && (
-        <div className="mt-8 w-full">
+        <div className="mt-8 w-[90%]">
           <ul>
             {subject &&
               subject.map((item) => {
@@ -241,7 +241,7 @@ const Subjects = () => {
                   <div className="bg-blue-100 py-3 px-6 mb-3 w-[70%]">
                     <li key={item.code} className="flex justify-between items-center mb-2">
                       <div>
-                        {item.code} - {item.name}
+                        <strong>{item.code}</strong> - {item.name}
                       </div>
 
                       <div className="flex items-center"> {/* New container for buttons */}

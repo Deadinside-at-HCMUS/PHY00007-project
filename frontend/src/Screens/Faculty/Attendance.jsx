@@ -18,6 +18,7 @@ const Attendance = () => {
 
   const [filterStudentID, setFilterStudentID] = useState("");
   const [filterSubject, setFilterSubject] = useState(null);
+  const [filterWeek, setFilterWeek] = useState(null);
   const [sortBy, setSortBy] = useState(null);  
 
   useEffect(() => {
@@ -128,27 +129,30 @@ const Attendance = () => {
   const filteredAndSortedAttendance = () => {
     let filteredAttendance = attendance;
   
-    // Apply subject filter
     if (filterSubject) {
       filteredAttendance = filteredAttendance.filter(
         (item) => item.subject === filterSubject
       );
     }
   
-    // Apply sorting
     if (sortBy === 'asc') {
       filteredAttendance.sort((a, b) => new Date(a.time) - new Date(b.time));
     } else if (sortBy === 'desc') {
       filteredAttendance.sort((a, b) => new Date(b.time) - new Date(a.time));
     }
   
-    // Apply student ID filter
     if (filterStudentID) {
       filteredAttendance = filteredAttendance.filter(
         (item) => item.studentID.toString() === filterStudentID
       );
     }
 
+    if (filterWeek) {
+      filteredAttendance = filteredAttendance.filter(
+        (item) => item.week.toString() === filterWeek
+      );
+    }
+  
     return filteredAttendance;
   };
 
@@ -246,42 +250,58 @@ const Attendance = () => {
       )}
       {selected === "view" && (
         <div className="mt-8 w-full">
-          <div className="flex items-center mb-6">
+          <div className="flex items-center mb-4 ml-2">
+            <label className="mr-14">Filter by Subject:</label>
+              <select
+                className="py-2 rounded border bg-blue-50 focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                value={filterSubject || ''}
+                onChange={(e) => setFilterSubject(e.target.value || null)}
+              >
+                <option value="">All Subjects</option>
+                {subject &&
+                  subject.map((subj) => (
+                    <option key={subj.name} value={subj.name}>
+                      {subj.name}
+                    </option>
+                  ))}
+              </select>
+            <div className="ml-5 mr-2">
+              <label className="ml-5 mr-5">Filter by Week:</label>
+              <select
+                className="py-2 rounded border bg-blue-50 focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                value={filterWeek || ''}
+                onChange={(e) => setFilterWeek(e.target.value || null)}
+              >
+                <option value="">All Weeks</option>
+                {[...Array(10)].map((_, index) => (
+                  <option key={index + 1} value={(index + 1).toString()}>
+                    Week {index + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="ml-5 mr-2">
+              <label className="ml-5 mr-5">Sort by Time:</label>
+              <select
+                className="py-2 rounded border bg-blue-50 focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                value={sortBy || ''}
+                onChange={(e) => setSortBy(e.target.value || null)}
+              >
+                <option value="">Default</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+              </select>
+            </div>
+          </div>
 
-            <label className="ml-5 mr-2">Find by Student ID:</label>
+          <div className="flex items-center mb-8 ml-2">
+            <label className="mr-4">Search by Student ID:</label>
             <input
               type="number"
               value={filterStudentID}
               onChange={(e) => setFilterStudentID(e.target.value)}
               className="rounded border bg-blue-50 focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
-            <div className="ml-5">
-                <label className="mr-2">Filter by Subject:</label>
-                <select
-                  className="py-2 px-2 bg-blue-50 rounded text-base accent-blue-700 mr-5"
-                  value={filterSubject || ''}
-                  onChange={(e) => setFilterSubject(e.target.value || null)}
-                >
-                  <option value="">All Subjects</option>
-                  {subject &&
-                    subject.map((subj) => (
-                      <option key={subj.name} value={subj.name}>
-                        {subj.name}
-                      </option>
-                    ))}
-                </select>
-
-                <label className="mr-2 ml-2">Sort by Time:</label>
-                <select
-                  className="py-2 px-3 bg-blue-50 rounded text-base accent-blue-700"
-                  value={sortBy || ''}
-                  onChange={(e) => setSortBy(e.target.value || null)}
-                >
-                  <option value="">Default</option>
-                  <option value="asc">Ascending</option>
-                  <option value="desc">Descending</option>
-                </select>
-            </div>
           </div>
 
           {attendance && attendance.length > 0 ? (
