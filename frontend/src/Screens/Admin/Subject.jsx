@@ -215,7 +215,7 @@ const Subjects = () => {
                       {item.code} - {item.name}
                     </div>
                     <button
-                      className="text-2xl hover:text-red-500"
+                      className="text-red-500 text-2xl hover:text-red-300"
                       onClick={() => deleteSubjectHandler(item._id)}
                     >
                       <MdOutlineDelete />

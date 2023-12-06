@@ -12,6 +12,10 @@ const Attendance = new mongoose.Schema({
   time: {
     type: String,
     required: true,
+  }, 
+  week: {
+    type: Number,
+    required: true,
   }
 }, { timestamps: true });
 

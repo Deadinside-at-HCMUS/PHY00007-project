@@ -10,6 +10,7 @@ const Attendance = () => {
     subject: "",
     studentID: "",
     time: "",
+    week: "",
   });
   const [selected, setSelected] = useState("add");
   const [attendance, setAttendance] = useState();
@@ -78,7 +79,7 @@ const Attendance = () => {
         toast.dismiss();
         if (response.data.success) {
           toast.success(response.data.message);
-          setData({ subject: "", studentID: "", time: "" });
+          setData({ subject: "", studentID: "", time: "", week: "" });
           getAttendanceHandler();
         } else {
           toast.error(response.data.message);
@@ -211,7 +212,7 @@ const Attendance = () => {
               className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
           </div>
-          <div className="w-[40%]">
+          <div className="w-[40%] mb-4">
             <label htmlFor="time" className="leading-7 text-sm ">
               Enter Attendance Time
             </label>
@@ -220,6 +221,18 @@ const Attendance = () => {
               id="time"
               value={data.time}
               onChange={(e) => setData({ ...data, time: e.target.value })}
+              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
+          </div>
+          <div className="w-[40%]">
+            <label htmlFor="week" className="leading-7 text-sm">
+              Enter Course Week
+            </label>
+            <input
+              type="number"
+              id="week"
+              value={data.week}
+              onChange={(e) => setData({ ...data, week: e.target.value })}
               className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
           </div>
@@ -282,7 +295,7 @@ const Attendance = () => {
                       Subject: {item.subject} &emsp; Student ID: {item.studentID}
                     </p>
                     <p>
-                      Date: {formatDate(item.time)} &emsp; Time {formatTime(item.time)}
+                      Date: {formatDate(item.time)} &emsp; Time {formatTime(item.time)} &emsp; Week: {item.week}
                     </p>
                   </div>
                   

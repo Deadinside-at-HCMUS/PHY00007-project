@@ -27,7 +27,7 @@ router.get("/getAttendance", async (req, res) => {
 });
 
 router.post("/addAttendance", async (req, res) => {
-    let { subject, studentID, time } = req.body;
+    let { subject, studentID, time, week } = req.body;
     try {
         let attedance = await Attendace.findOne({ time });
         if (attedance) {
@@ -38,7 +38,8 @@ router.post("/addAttendance", async (req, res) => {
         await Attendace.create({
             subject,
             studentID,
-            time
+            time,
+            week
         });
         const data = {
             success: true,
