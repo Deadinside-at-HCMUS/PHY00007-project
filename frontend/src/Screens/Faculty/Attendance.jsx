@@ -20,6 +20,8 @@ const Attendance = () => {
   const [filterSubject, setFilterSubject] = useState(null);
   const [sortBy, setSortBy] = useState(null);  
 
+  const [newStudentID, setNewStudentID] = useState("");
+
   useEffect(() => {
     getSubjectData();
   }, []);
@@ -255,10 +257,10 @@ const Attendance = () => {
               onChange={(e) => setFilterStudentID(e.target.value)}
               className="rounded border bg-blue-50 focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
             />
-            <div className="ml-20">
-                <label className="mr-2 ml-15">Filter by Subject:</label>
+            <div className="ml-5">
+                <label className="mr-2">Filter by Subject:</label>
                 <select
-                  className="py-1 px-2 bg-blue-50 rounded text-base accent-blue-700 mr-5"
+                  className="py-2 px-2 bg-blue-50 rounded text-base accent-blue-700 mr-5"
                   value={filterSubject || ''}
                   onChange={(e) => setFilterSubject(e.target.value || null)}
                 >
@@ -273,7 +275,7 @@ const Attendance = () => {
 
                 <label className="mr-2 ml-2">Sort by Time:</label>
                 <select
-                  className="py-1 px-3 bg-blue-50 rounded text-base accent-blue-700"
+                  className="py-2 px-3 bg-blue-50 rounded text-base accent-blue-700"
                   value={sortBy || ''}
                   onChange={(e) => setSortBy(e.target.value || null)}
                 >
@@ -292,10 +294,13 @@ const Attendance = () => {
                   className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[60%]">
                   <div>
                     <p>
-                      Subject: {item.subject} &emsp; Student ID: {item.studentID}
+                      <strong>Subject:</strong> {item.subject} &emsp; 
+                      <strong>Student ID:</strong> {item.studentID}
                     </p>
                     <p>
-                      Date: {formatDate(item.time)} &emsp; Time {formatTime(item.time)} &emsp; Week: {item.week}
+                      <strong>Date:</strong> {formatDate(item.time)} &emsp; 
+                      <strong>Time:</strong> {formatTime(item.time)} &emsp; 
+                      <strong>Week:</strong> {item.week}
                     </p>
                   </div>
                   
