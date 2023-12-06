@@ -2,6 +2,28 @@ const express = require("express");
 const router = express.Router();
 const facultyDetails = require("../../models/Faculty/FacultyDetails");
 
+router.post("/getFaculty", async (req, res) => {
+    try {
+        let users = await facultyDetails.find();
+        if (!users) {
+            return res
+                .status(400)
+                .json({ success: false, message: "No Faculty Found" });
+        }
+        const data = {
+            success: true,
+            message: "Faculty Details Found!",
+            users,
+        };
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+});
+
 router.post("/getDetails", async (req, res) => {
     try {
         let user = await facultyDetails.find(req.body);

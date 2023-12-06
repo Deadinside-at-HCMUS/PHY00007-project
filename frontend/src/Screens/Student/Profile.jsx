@@ -112,9 +112,6 @@ const Profile = () => {
               </p>
               <p className="text-lg font-normal mb-2">Department: {data.branch}</p>
               <p className="text-lg font-normal mb-2">
-                Semester: {data.semester}
-              </p>
-              <p className="text-lg font-normal mb-2">
                 Phone Number: +84 {data.phoneNumber}
               </p>
               <p className="text-lg font-normal mb-2">

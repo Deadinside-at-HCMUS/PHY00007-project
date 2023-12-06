@@ -177,27 +177,27 @@ const Attendance = () => {
       {selected === "add" && (
         <div className="flex flex-col justify-center items-center w-full mt-8">
           <div className="w-[40%] mb-4">
-          <label htmlFor="" className="leading-7 text-sm">
-              Select Subject
+            <label htmlFor="" className="leading-7 text-sm">
+                Select Subject
             </label>
             <select
-              id="subject"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[100%] accent-blue-700"
-              value={data.subject}
-              onChange={(e) =>
-                setData({ ...data, subject: e.target.value })
-              }
-            >
-              <option defaultValue>-- Select Subject --</option>
-              {subject &&
-                subject.map((subject) => {
-                  return (
-                    <option value={subject.name} key={subject.name}>
-                      {subject.name}
-                    </option>
-                  );
-                })}
-            </select>
+                id="subject"
+                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-[100%] accent-blue-700"
+                value={data.subject}
+                onChange={(e) =>
+                  setData({ ...data, subject: e.target.value })
+                }
+              >
+                <option defaultValue>-- Select Subject --</option>
+                {subject &&
+                  subject.map((subject) => {
+                    return (
+                      <option value={subject.name} key={subject.name}>
+                        {subject.name}
+                      </option>
+                    );
+                  })}
+              </select>
           </div>
           <div className="w-[40%] mb-4">
             <label htmlFor="studentID" className="leading-7 text-sm">

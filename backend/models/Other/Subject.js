@@ -8,6 +8,14 @@ const Subject = new mongoose.Schema({
   code: {
     type: Number,
     required: true,
+  }, 
+  duration: {
+    type: Number,
+    required: true,
+  },
+  lecturer: {
+    type: String,
+    required: true,
   }
 }, { timestamps: true });
 

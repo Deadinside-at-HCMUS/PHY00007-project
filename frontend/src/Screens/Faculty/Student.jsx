@@ -116,9 +116,6 @@ const Student = () => {
                 <p className="text-lg font-normal mb-2">
                   Department: {data.branch}
                 </p>
-                <p className="text-lg font-normal mb-2">
-                  Semester: {data.semester}
-                </p>
               </div>
             </div>
             <img

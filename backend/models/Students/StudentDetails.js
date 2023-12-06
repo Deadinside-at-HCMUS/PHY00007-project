@@ -25,10 +25,6 @@ const studentDetails = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  semester: {
-    type: Number,
-    required: true,
-  },
   branch: {
     type: String,
     required: true,

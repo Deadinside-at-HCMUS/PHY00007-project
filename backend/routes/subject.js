@@ -26,7 +26,7 @@ router.get("/getSubject", async (req, res) => {
 });
 
 router.post("/addSubject", async (req, res) => {
-    let { name, code } = req.body;
+    let { name, code, duration, lecturer } = req.body;
     try {
         let subject = await Subject.findOne({ code });
         if (subject) {
@@ -37,6 +37,8 @@ router.post("/addSubject", async (req, res) => {
         await Subject.create({
             name,
             code,
+            duration, 
+            lecturer
         });
         const data = {
             success: true,
