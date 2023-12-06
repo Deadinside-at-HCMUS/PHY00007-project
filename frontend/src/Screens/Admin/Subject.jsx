@@ -211,7 +211,7 @@ const Subjects = () => {
 
           <div className="w-[40%]">
             <label htmlFor="name" className="leading-7 text-sm ">
-              Enter StudentIds In Course (Id1,Id2,...):
+              Enter StudentIds In Course (StudentId1,StudentId2,StudentId3,...):
             </label>
             <input
               type="text"

@@ -5,6 +5,7 @@ import Heading from "../../components/Heading";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { baseApiURL } from "../../baseUrl";
+
 const Timetable = () => {
   const [timetable, setTimetable] = useState("");
   const { userData } = useSelector((state) => state);
@@ -17,7 +18,7 @@ const Timetable = () => {
       axios
         .post(
           `${baseApiURL()}/timetable/getTimetable`,
-          { semester: userData.semester, branch: userData.branch },
+          { branch: userData.branch },
           {
             headers: headers,
           }
@@ -33,12 +34,12 @@ const Timetable = () => {
         });
     };
     userData && getTimetable();
-  }, [userData, userData.branch, userData.semester]);
+  }, [userData, userData.branch]);
 
   return (
     <div className="w-[85%] mx-auto mt-10 flex justify-center items-start flex-col mb-10">
       <div className="flex justify-between items-center w-full">
-        <Heading title={`Timetable of Semester ${userData.semester}`} />
+        <Heading title={`Timetable of Department ${userData.branch}`} />
         <p
           className="flex justify-center items-center text-lg font-medium cursor-pointer hover:text-red-500 hover:scale-110 ease-linear transition-all duration-200 hover:duration-200 hover:ease-linear hover:transition-all"
           onClick={() => window.open(timetable)}
