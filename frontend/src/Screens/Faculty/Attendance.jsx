@@ -15,6 +15,10 @@ const Attendance = () => {
   const [attendance, setAttendance] = useState();
   const [subject, setSubject] = useState();
 
+  const [filterStudentID, setFilterStudentID] = useState("");
+  const [filterSubject, setFilterSubject] = useState(null);
+  const [sortBy, setSortBy] = useState(null);  
+
   useEffect(() => {
     getSubjectData();
   }, []);
@@ -109,6 +113,44 @@ const Attendance = () => {
         toast.error(error.response.data.message);
       });
   };
+
+  const formatDate = (timestamp) => {
+    const dateTime = new Date(timestamp);
+    return dateTime.toDateString(); // Adjust format as needed
+  };
+
+  const formatTime = (timestamp) => {
+    const dateTime = new Date(timestamp);
+    return dateTime.toLocaleTimeString(); // Adjust format as needed
+  };
+
+  const filteredAndSortedAttendance = () => {
+    let filteredAttendance = attendance;
+  
+    // Apply subject filter
+    if (filterSubject) {
+      filteredAttendance = filteredAttendance.filter(
+        (item) => item.subject === filterSubject
+      );
+    }
+  
+    // Apply sorting
+    if (sortBy === 'asc') {
+      filteredAttendance.sort((a, b) => new Date(a.time) - new Date(b.time));
+    } else if (sortBy === 'desc') {
+      filteredAttendance.sort((a, b) => new Date(b.time) - new Date(a.time));
+    }
+  
+    // Apply student ID filter
+    if (filterStudentID) {
+      filteredAttendance = filteredAttendance.filter(
+        (item) => item.studentID.toString() === filterStudentID
+      );
+    }
+
+    return filteredAttendance;
+  };
+
   return (
     <div className="w-[85%] mx-auto mt-10 flex justify-center items-start flex-col mb-10">
       <div className="flex justify-between items-center w-full">
@@ -191,20 +233,64 @@ const Attendance = () => {
       )}
       {selected === "view" && (
         <div className="mt-8 w-full">
+          <div className="flex items-center mb-6">
+
+            <label className="ml-5 mr-2">Find by Student ID:</label>
+            <input
+              type="number"
+              value={filterStudentID}
+              onChange={(e) => setFilterStudentID(e.target.value)}
+              className="rounded border bg-blue-50 focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+            />
+            <div className="ml-20">
+                <label className="mr-2 ml-15">Filter by Subject:</label>
+                <select
+                  className="py-1 px-2 bg-blue-50 rounded text-base accent-blue-700 mr-5"
+                  value={filterSubject || ''}
+                  onChange={(e) => setFilterSubject(e.target.value || null)}
+                >
+                  <option value="">All Subjects</option>
+                  {subject &&
+                    subject.map((subj) => (
+                      <option key={subj.name} value={subj.name}>
+                        {subj.name}
+                      </option>
+                    ))}
+                </select>
+
+                <label className="mr-2 ml-2">Sort by Time:</label>
+                <select
+                  className="py-1 px-3 bg-blue-50 rounded text-base accent-blue-700"
+                  value={sortBy || ''}
+                  onChange={(e) => setSortBy(e.target.value || null)}
+                >
+                  <option value="">Default</option>
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
+                </select>
+            </div>
+          </div>
+
           {attendance && attendance.length > 0 ? (
             <ul>
-              {attendance.map((item) => (
+              {filteredAndSortedAttendance().map((item) => (
                 <li 
                   key={item.id}
-                  className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[70%]">
+                  className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[60%]">
                   <div>
-                    Subject: {item.subject}, Student ID: {item.studentID}, Time: {item.time}
+                    <p>
+                      Subject: {item.subject} &emsp; Student ID: {item.studentID}
+                    </p>
+                    <p>
+                      Date: {formatDate(item.time)} &emsp; Time {formatTime(item.time)}
+                    </p>
                   </div>
+                  
                   <button
-                      className="text-2xl hover:text-red-500"
-                      onClick={() => deleteAttendanceHandler(item._id)}
-                    >
-                      <MdOutlineDelete />
+                    className="text-red-500 text-2xl hover:text-red-300"
+                    onClick={() => deleteAttendanceHandler(item._id)}
+                  >
+                    <MdOutlineDelete />
                   </button>
                 </li>
               ))}
