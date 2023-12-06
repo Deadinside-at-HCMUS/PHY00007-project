@@ -188,27 +188,27 @@ const Attendance = () => {
       )}
       {selected === "view" && (
         <div className="mt-8 w-full">
-          <ul>
-            {attendance &&
-              attendance.map((item) => {
-                return (
-                  <li
-                    key={item.code}
-                    className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[70%]"
-                  >
-                    <div>
-                      {item.code} - {item.name}
-                    </div>
-                    <button
+          {attendance && attendance.length > 0 ? (
+            <ul>
+              {attendance.map((item) => (
+                <li 
+                  key={item.id}
+                  className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[70%]">
+                  <div>
+                    Subject: {item.subject}, Student ID: {item.studentID}, Time: {item.time}
+                  </div>
+                  <button
                       className="text-2xl hover:text-red-500"
                       onClick={() => deleteAttendanceHandler(item._id)}
                     >
                       <MdOutlineDelete />
-                    </button>
-                  </li>
-                );
-              })}
-          </ul>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No attendance records available.</p>
+          )}
         </div>
       )}
     </div>
