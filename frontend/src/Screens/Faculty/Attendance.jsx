@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Heading from "../../components/Heading";
 import { MdOutlineDelete } from "react-icons/md";
@@ -12,6 +13,7 @@ const Attendance = () => {
     time: "",
     week: "",
   });
+  const router = useLocation();
   const [selected, setSelected] = useState("add");
   const [attendance, setAttendance] = useState();
   const [subject, setSubject] = useState();
@@ -53,10 +55,9 @@ const Attendance = () => {
       "Content-Type": "application/json",
     };
     axios
-      .get(`${baseApiURL()}/attendance/getAttendance`, { headers })
+      .get(`${baseApiURL()}/attendance/getAttendance/${router.state.loginid}`, { headers })
       .then((response) => {
         if (response.data.success) {
-          console.log(response.data);
           setAttendance(response.data.attendance);
         } else {
           toast.error(response.data.message);

@@ -102,7 +102,7 @@ const Profile = () => {
         <>
           <div>
             <p className="text-2xl font-semibold">
-              Hello {data[0].firstName} {data[0].middleName} {data[0].lastName}{" "}
+              Hello {data[0].lastName} {data[0].middleName} {data[0].firstName}{" "}
               👋
             </p>
             <div className="mt-3">

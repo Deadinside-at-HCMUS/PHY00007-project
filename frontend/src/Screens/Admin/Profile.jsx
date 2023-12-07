@@ -104,7 +104,7 @@ const Profile = () => {
         <>
           <div>
             <p className="text-2xl font-semibold">
-              Hello {data.firstName} {data.middleName} {data.lastName}👋
+              Hello {data.lastName} {data.middleName} {data.firstName} 👋
             </p>
             <div className="mt-3">
               <p className="text-lg font-normal mb-2">

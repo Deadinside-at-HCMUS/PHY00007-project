@@ -1,11 +1,36 @@
 const express = require("express");
 const router = express.Router();
 const Attendace = require("../models/Other/Attendance");
+const Subject = require("../models/Other/Subject");
 
 router.get("/getAttendance", async (req, res) => {
     try {
         let attendance = await Attendace.find();
-        // console.log(attendance);
+        if (!attendance) {
+            return res
+                .status(400)
+                .json({ success: false, message: "No Attendace Available" });
+        }
+        const data = {
+            success: true,
+            message: "All Attendace Loaded!",
+            attendance,
+        };
+        res.json(data);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+});
+
+router.get("/getAttendance/:id", async (req, res) => {
+    try {
+        const subjectList = await Subject.find({ lecturer: req.params.id });
+        const subjectNames = subjectList.map((subject) => subject.name);
+        let attendance = await Attendace.find({ subject: subjectNames });
         if (!attendance) {
             return res
                 .status(400)
@@ -39,7 +64,7 @@ router.post("/addAttendance", async (req, res) => {
             subject,
             studentID,
             time,
-            week
+            week,
         });
         const data = {
             success: true,
