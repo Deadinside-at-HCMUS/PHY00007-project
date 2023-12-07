@@ -118,12 +118,12 @@ const Attendance = () => {
 
   const formatDate = (timestamp) => {
     const dateTime = new Date(timestamp);
-    return dateTime.toDateString(); // Adjust format as needed
+    return dateTime.toDateString(); 
   };
 
   const formatTime = (timestamp) => {
     const dateTime = new Date(timestamp);
-    return dateTime.toLocaleTimeString(); // Adjust format as needed
+    return dateTime.toLocaleTimeString(); 
   };
 
   const filteredAndSortedAttendance = () => {
