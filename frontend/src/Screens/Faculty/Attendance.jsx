@@ -314,6 +314,8 @@ const Attendance = () => {
                   <div>
                     <p>
                       <strong>Subject:</strong> {item.subject} &emsp; 
+                    </p>
+                    <p>
                       <strong>Student ID:</strong> {item.studentID}
                     </p>
                     <p>

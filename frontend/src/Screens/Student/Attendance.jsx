@@ -130,7 +130,6 @@ const StudentAttendance = () => {
                   <div>
                     <p>
                       <strong>Subject:</strong> {item.subject} &emsp; 
-                      <strong>StudentID: </strong> {item.studentID};
                     </p>
                     <p>
                       <strong>Date:</strong> {formatDate(item.time)} &emsp; 
