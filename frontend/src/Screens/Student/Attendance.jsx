@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import Heading from "../../components/Heading";
 import { toast } from "react-hot-toast";
 import { baseApiURL } from "../../baseUrl";
@@ -10,6 +11,7 @@ const StudentAttendance = () => {
   const [filterSubject, setFilterSubject] = useState(null);
   const [filterWeek, setFilterWeek] = useState(null);
   const [sortBy, setSortBy] = useState(null);  
+  const router = useLocation();
 
   useEffect(() => {
     getAllAttendanceHandler();
@@ -21,7 +23,7 @@ const StudentAttendance = () => {
     };
 
     axios
-      .get(`${baseApiURL()}/attendance/getAttendance`, { headers })
+      .get(`${baseApiURL()}/attendance/getAttendance/student/${router.state.loginid}`, { headers })
       .then((response) => {
         if (response.data.success) {
           setAttendance(response.data.attendance);

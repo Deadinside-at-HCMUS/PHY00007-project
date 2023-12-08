@@ -55,7 +55,7 @@ const Attendance = () => {
       "Content-Type": "application/json",
     };
     axios
-      .get(`${baseApiURL()}/attendance/getAttendance/${router.state.loginid}`, { headers })
+      .get(`${baseApiURL()}/attendance/getAttendance/faculty/${router.state.loginid}`, { headers })
       .then((response) => {
         if (response.data.success) {
           setAttendance(response.data.attendance);
