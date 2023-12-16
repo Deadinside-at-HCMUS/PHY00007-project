@@ -1,2 +1,2 @@
-POST http://localhost:8080/api/faculty/details/getFaculty
+POST https://maker.ifttt.com/trigger/Attendance/with/key/dBsF6Jm77xE2W7acDtOCzf?value1=Huynh%20Duc%20Thien&value3=10&value2=Physics%20for%20IT%20-%2021CLC02&
 Content-Type: application/json
