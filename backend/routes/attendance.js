@@ -59,6 +59,7 @@ router.get("/getAttendance/student/:id", async (req, res) => {
                 .status(400)
                 .json({ success: false, message: "No Attendace Available" });
         }
+
         const data = {
             success: true,
             message: "All Attendace Loaded!",
@@ -77,12 +78,22 @@ router.get("/getAttendance/student/:id", async (req, res) => {
 router.post("/addAttendance", async (req, res) => {
     let { subject, studentID, time, week } = req.body;
     try {
-        let attedance = await Attendace.findOne({ time });
-        if (attedance) {
-            return res
-                .status(400)
-                .json({ success: false, message: "Attendace Already Exists" });
+        let foundSubject = await Subject.findOne({ name: subject });
+        if (!foundSubject.students.includes(studentID)) {
+            return res.status(400).json({
+                success: false,
+                message: "Student haven't registered this course!",
+            });
         }
+
+        let attedance = await Attendace.findOne({ studentID, subject, week });
+        if (attedance) {
+            return res.status(400).json({
+                success: false,
+                message: "Student have already attended the class!",
+            });
+        }
+
         await Attendace.create({
             subject,
             studentID,

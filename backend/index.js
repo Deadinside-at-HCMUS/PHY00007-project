@@ -20,10 +20,8 @@ app.use("/api/faculty/details", require("./routes/Faculty Api/facultyDetails"));
 app.use("/api/admin/details", require("./routes/Admin Api/adminDetails"));
 // Other Apis
 app.use("/api/timetable", require("./routes/timetable"));
-app.use("/api/material", require("./routes/material"));
 app.use("/api/notice", require("./routes/notice"));
 app.use("/api/subject", require("./routes/subject"));
-app.use("/api/marks", require("./routes/marks"));
 app.use("/api/branch", require("./routes/branch"));
 app.use("/api/attendance", require("./routes/attendance"));
 
@@ -83,6 +81,7 @@ client.on("message", (topic, payload) => {
                     const foundStudent = response.data.user[0];
                     const studentID = foundStudent.enrollmentNo;
                     console.log("Student ID found:", studentID);
+
                     data = {
                         subject: course,
                         studentID: studentID,
