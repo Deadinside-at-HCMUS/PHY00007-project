@@ -3,20 +3,19 @@
 #include <PubSubClient.h>
 #include <SoftwareSerial.h>
 
-// WiFi
-// const char *ssid = "hwangdeokthienOnPhone"; // Enter your WiFi name
-// const char *password = "smartAttendance";  // Enter WiFi password
-const char *ssid = "Tuhuynhh"; // Enter your WiFi name
-const char *password = "thuongtuthien";  // Enter WiFi password
+// initialize
+// wiFi
+const char *ssid = "Tuhuynhh"; // wiFi name
+const char *password = "thuongtuthien";  // wiFi password
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 // MQTT Broker
-const char *mqtt_broker = "broker.emqx.io"; // broker address
-const char *topic = "esp8266/smartAttendance"; // define topic 
+const char *mqtt_broker = "broker.emqx.io";
+const char *topic = "esp8266/smartAttendance";
 const char *mqtt_username = "group02_sma"; // username for authentication
 const char *mqtt_password = "21clc_iot"; // password for authentication
-const int mqtt_port = 1883; // port of MQTT over TCP
+const int mqtt_port = 1883;
 
 // UART transmission
 SoftwareSerial uartSerial(D2, D1); 
@@ -25,7 +24,7 @@ SoftwareSerial uartSerial(D2, D1);
 StaticJsonDocument<200> doc;
 
 void connectWifi() {
-  // connecting to a WiFi network
+  // connect to wiFi network
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
       delay(500);
@@ -34,10 +33,22 @@ void connectWifi() {
   Serial.println("Connected to the WiFi network");
 }
 
+void callback(char *topic, byte *payload, unsigned int length) {
+  Serial.print("Message arrived in topic: ");
+  Serial.println(topic);
+  Serial.print("Message: ");
+  for (int i = 0; i < length; i++) {
+      Serial.print((char) payload[i]);
+  }
+  Serial.println();
+  Serial.println("-----------------------");
+}
+
 void connectMQTT() {
-  //connecting to a mqtt broker
+  // connect to mqtt broker
   client.setServer(mqtt_broker, mqtt_port);
   client.setCallback(callback);
+
   while (!client.connected()) {
       String client_id = "esp8266-client-";
       client_id += String(WiFi.macAddress());
@@ -52,31 +63,19 @@ void connectMQTT() {
   }
 }
 
-void callback(char *topic, byte *payload, unsigned int length) {
-  // Serial.print("Message arrived in topic: ");
-  // Serial.println(topic);
-  // Serial.print("Message: ");
-  // for (int i = 0; i < length; i++) {
-  //     Serial.print((char) payload[i]);
-  // }
-  // Serial.println();
-  // Serial.println("-----------------------");
-}
-
 void setup() {
   uartSerial.begin(115200);
 
-  // Set software serial baud to 9600;
   Serial.begin(9600);
 
   connectWifi();
   
   connectMQTT();
 
-  // publish and subscribe
+  // publish and subscribe, checking connection
   const char* welcome_message = "{\"Content\":\"Welcome message!\", \"ID\":-1}";
-  client.publish(topic, welcome_message); // publish to the topic
-  client.subscribe(topic); // subscribe from the topic
+  client.publish(topic, welcome_message);
+  client.subscribe(topic);
 }
 
 
@@ -84,28 +83,28 @@ void setup() {
 void loop() {
   client.loop();
 
-  if (uartSerial.available()) { // Nếu có dữ liệu từ cổng nối tiếp mềm
-    String data = uartSerial.readStringUntil('\n'); // Đọc chuỗi dữ liệu
+  if (uartSerial.available()) { // If there's data from Mega
+    // Read data string
+    String data = uartSerial.readStringUntil('\n');
 
-    // Chuyển đổi chuỗi JSON thành đối tượng JsonDocument
+    // convert JSON string to JsonDocument object
     DeserializationError error = deserializeJson(doc, data);
 
-    // Kiểm tra xem có lỗi nào trong quá trình chuyển đổi hay không
+    // Check if there's error in coverting stage
     if (error) {
       Serial.print("deserializeJson() failed: ");
       Serial.println(error.c_str());
       return;
     }
 
-    // Lấy ID từ đối tượng JsonDocument
+    // Take ID from JsonDocument object and print to Serial monitor
     int id = doc["ID"];
-
-    // In các giá trị ra màn hình nối tiếp
     Serial.print("Attendance ID: ");
     Serial.println(id);
 
+    // publish attendance data to mqtt broker
     const char* publishData = data.c_str();
-    client.publish(topic, publishData); // publish to the topic
+    client.publish(topic, publishData);
 
     delay(1000);
   }

@@ -1,10 +1,10 @@
-#include <Wire.h> 
 #include <NewPing.h>
 #include <ArduinoJson.h>
 #include <TimerFreeTone.h>
 #include <LiquidCrystal_I2C.h>
 #include <Adafruit_Fingerprint.h>
 
+// led state
 #define OFF_LED 0
 #define RED_LED 1
 #define GREEN_LED 2
@@ -34,7 +34,7 @@ const int redPin = 7;
 const int greenPin = 6;
 const int bluePin = 5;
 
-// 6. esp connection
+// 6. esp connection with UART transmission
 const int rxPin = 11;
 const int txPin = 12;
 SoftwareSerial uartSerial(rxPin, txPin);
@@ -42,7 +42,9 @@ SoftwareSerial uartSerial(rxPin, txPin);
 // 7. json data
 StaticJsonDocument<200> doc;
 
+
 // support functions
+// changing led state
 void turnLed(int led) {
   if (led == RED_LED) { 
     analogWrite(redPin,   255);
@@ -66,6 +68,7 @@ void turnLed(int led) {
   }
 }
 
+// operating corresponding signal to right/wrong attendance
 void attendanceSignal(bool isAccurate) {
   if (isAccurate) {
     lcd.clear();
@@ -90,9 +93,9 @@ void attendanceSignal(bool isAccurate) {
     delay(1000);
     turnLed(BLUE_LED);
   }
-
 }
 
+// calculating distance from sensor to obstacle
 unsigned int getDistance() {
   delay(50);
   unsigned int uS = sonar.ping();
@@ -101,24 +104,20 @@ unsigned int getDistance() {
     return maxDistance;
   }
 
-  pinMode(echoPin, OUTPUT);
-  digitalWrite(echoPin, LOW);
-  pinMode(echoPin, INPUT);
-
   unsigned int distanceCm = uS / US_ROUNDTRIP_CM;
   return distanceCm;
 }
 
-// returns -1 if failed, otherwise returns ID #
+// returns -1 or -2 if failed, otherwise returns fingerprint ID
 int getFingerprintIDez() {
   uint8_t p = finger.getImage();
-  if (p != 2){
+  if (p != 2) {
     Serial.println(p);
   }
   if (p != FINGERPRINT_OK) return -1;
   
   p = finger.image2Tz();
-  if (p != 2){
+  if (p != 2) {
     Serial.println(p);
   }
   if (p != FINGERPRINT_OK) return -1;
@@ -132,8 +131,7 @@ int getFingerprintIDez() {
   return finger.fingerID; 
 }
 
-void setup()
-{
+void setup() {
   // lcd setup
   lcd.init();                    
   lcd.backlight();
@@ -170,7 +168,7 @@ void setup()
 void loop() {
   unsigned int distance = getDistance();
 
-  if (distance < 100) {
+  if (distance < 100) { // if there's person nearby
     if (!isOn) {
       lcd.backlight();
       lcd.setCursor(0, 0);
@@ -187,33 +185,33 @@ void loop() {
     turnLed(OFF_LED);
   }
 
+  // get input fingerprint ID
   finger_status = getFingerprintIDez();
-  if (finger_status != -1 && finger_status != -2){
+  if (finger_status != -1 && finger_status != -2){ // if have found fingerprint ID
     Serial.print("Match\n");
     attendanceSignal(true);
 
     String data = "Attendance ID: " + (String)(finger_status);
     Serial.println(data);
 
-    // Gán ID vào đối tượng JsonDocument
+    // Assign information to JsonDocument object
     doc["Content"] = "Attendance";
     doc["ID"] = finger_status;
     doc["Course"] = "Physics for IT - 21CLC02";
     doc["Week"] = 10;
 
-    // Chuyển đổi đối tượng JsonDocument thành chuỗi JSON và gửi nó qua cổng nối tiếp ảo
+    // Converting JsonDocument object to JSON string and send to esp
     serializeJson(doc, uartSerial);
     uartSerial.println();
 
-    // Chuyển đổi đối tượng JsonDocument thành chuỗi JSON và gửi nó qua cổng nối tiếp thật
+    // Converting JsonDocument object to JSON string and printing through Serial monitor
     serializeJson(doc, Serial);
     Serial.println();
 
     delay(1000);
-  } else {
-    if (finger_status == -2){
-      Serial.print("Not Match\n");
-      attendanceSignal(false);
-    }
+
+  } else if (finger_status == -2) { // if have not found fingerprint ID
+    Serial.print("Not Match\n");
+    attendanceSignal(false);
   }
 }
