@@ -19,6 +19,7 @@ To run the server locally, follow these steps:
    ```bash
    git clone https://github.com/Deadinside-at-HCMUS/c.git
    cd PHY00007-project
+   cd website
    ```
 
 2. Navigate to server folder and install required packages for backend server.
